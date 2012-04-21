@@ -13,6 +13,9 @@ var CR = Em.Application.create({
 CR.Node = Em.Object.extend({
   token: null,
   percentage: 0,
+  delete: function() {
+    this.set('token', null);
+  },
   prettyPercentage: function() {
     return Math.round(100 * this.get('percentage'));
   }.property('percentage')
@@ -26,10 +29,32 @@ CR.Ring = Em.ArrayProxy.extend({
       this.pushObject(node);
     }.bind(this));
   },
-  delete: function() {
+  deleteRing: function() {
     CR.get('ringController').removeObject(this);
   },
+  addToken: function() {
+    var i = this.get('firstObject').get('token');
+    i++;
+    while (this.some(function(item) { return item.get('token') == i;})) {
+      i++;
+    }
+    this.pushObject(CR.Node.create({token: i}));
+  },
+  rebalance: function() {
+    var new_tokens = CR.calculateBalancedTokens(this.get('length'));
+    this.forEach(function (node) {
+      node.set('token', new_tokens.shift());
+    });
+  },
   tokenChanged: function() {
+    var null_items = this.filterProperty('token', null);
+    this.removeObjects(null_items);
+
+    if (this.get('length') === 0) {
+      this.deleteRing();
+      return;
+    }
+
     var tokens = this.map(function(item) {
       return [item, item.get('token') * 1];
     });
