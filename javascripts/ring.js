@@ -1,5 +1,8 @@
 var CR = Em.Application.create({
   MAX_TOKEN: (new BigNumber(2)).pow(127),
+  max_token_f: function() {
+    return this.get('MAX_TOKEN').intPart() * 1;
+  }.property('MAX_TOKEN'),
   calculateBalancedTokens: function(token_count) {
     var tokens = [];
     for (var i = 0; i < token_count; i++) {
@@ -17,7 +20,11 @@ CR.Node = Em.Object.extend({
     this.set('token', null);
   },
   prettyPercentage: function() {
-    return Math.round(100 * this.get('percentage'));
+    var p = Math.round(100 * this.get('percentage')) + '';
+    if (p.length == 1) {
+      p = '0' + p;
+    }
+    return p;
   }.property('percentage')
 });
 
@@ -62,7 +69,7 @@ CR.Ring = Em.ArrayProxy.extend({
       tokens.sort(function(a,b) {
         return b[1] < a[1];
       });
-      var max_token = CR.MAX_TOKEN.intPart() * 1;
+      var max_token = CR.get('max_token_f');
       for (var i = 0; i < tokens.length -1; i++) {
         var token_node = tokens[i][0];
         var token = tokens[i][1];
@@ -95,7 +102,7 @@ CR.NodeView = Em.View.extend({
   raphael_object: null,
   color: 'green',
   moveNode: function() {
-    var max_token = CR.MAX_TOKEN.intPart() * 1;
+    var max_token = CR.get('max_token_f');
     var token = this.getPath('content.token');
 
     var tokenf = token * 1;
@@ -133,7 +140,6 @@ CR.NodeView = Em.View.extend({
   }
 });
 
-
 CR.RingView = Em.View.extend({
   ring: null,
   paper: null,
@@ -149,6 +155,40 @@ CR.RingView = Em.View.extend({
     var ring_x = this.get('ring_x');
     var ring_y = this.get('ring_y');
 
-    this.get('paper').circle(ring_x, ring_y, radius).attr({fill: "#223fa3", stroke: "#000", "stroke-width": 2, "stroke-opacity": 0.5});
+    this.get('paper').circle(ring_x, ring_y, radius).attr({stroke: "#223fa3", "stroke-width": 4});
+  }
+});
+
+CR.RangeView = Ember.View.extend({
+  tagName: 'input',
+  type: 'range',
+  attributeBindings: ['type', 'min', 'max', 'value'],
+
+  min: null,
+  max: null,
+  value: null,
+
+  change: function() {
+    this.set('value', this.$().prop('value'));
+  }
+});
+
+CR.TokenSliderView = CR.RangeView.extend({
+  min: 0,
+  maxBinding: 'CR.max_token_f',
+  change: function() {
+    var val = this.$().prop('value');
+    var match = val.match(/([0-9.]+)e[-+]?([0-9]+)/);
+    if (match) {
+      var parts = match[1].split('.');
+      val = parts.join('');
+      var zeros = match[2] * 1;
+      zeros = zeros - parts[1].length;
+      while (zeros > 0) {
+        val = val + '' + '0';
+        zeros--;
+      }
+    }
+    this.set('value', val);
   }
 });

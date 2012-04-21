@@ -36,6 +36,7 @@
         {{#collection contentBinding="content"}}
           {{view Em.TextField classNames="token" valueBinding="content.token"}}
           {{content.prettyPercentage}}%
+          {{view CR.TokenSliderView valueBinding="content.token"}}
           <a href="#" {{action "delete" target="content"}}>Delete</a>
         {{/collection}}
         <button class="btn-large btn-primary" {{action "addToken" target="content"}}>Add Token</button>
