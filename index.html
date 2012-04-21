@@ -19,8 +19,13 @@
 </head>
 <body>
   <div id="ring">
-    hello
-    <div id="canvas"></div>
+    <script type="text/x-handlebars">
+      {{#collection contentBinding="CR.ringController"}}
+        {{#view CR.RingView ring=content}}
+          {{collection contentBinding="ring" itemViewClass="CR.NodeView"}}
+        {{/view}}
+      {{/collection}}
+    </script>
   </div>
   <div id="controls">
     <script type="text/x-handlebars">

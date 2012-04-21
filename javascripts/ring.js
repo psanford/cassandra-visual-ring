@@ -35,17 +35,14 @@ CR.Ring = Em.ArrayProxy.extend({
         return b[1] < a[1];
       });
       var max_token = CR.MAX_TOKEN.intPart() * 1;
-      console.log(max_token);
       for (var i = 0; i < tokens.length -1; i++) {
         var token_node = tokens[i][0];
         var token = tokens[i][1];
-        console.log(token);
         var next = tokens[i+1][1];
         var percent = (next - token) / max_token;
         token_node.set('percentage', percent);
       }
 
-      console.log(tokens);
       var token_node = tokens[tokens.length-1][0];
       var token = tokens[tokens.length-1][1];
       var distance = max_token - token;
@@ -66,67 +63,64 @@ CR.set('ringController', Em.ArrayProxy.create({
   }
 }));
 
+CR.NodeView = Em.View.extend({
+  raphael_object: null,
+  color: 'green',
+  moveNode: function() {
+    var max_token = CR.MAX_TOKEN.intPart() * 1;
+    var token = this.getPath('content.token');
+
+    var tokenf = token * 1;
+    var deg = tokenf * 360 / max_token;
+    var rad = Raphael.rad(deg);
+
+    var parent = this.nearestInstanceOf(CR.RingView);
+    var radius = parent.get('radius');
+    var ring_x = parent.get('ring_x');
+    var ring_y = parent.get('ring_y');
+
+    var x = ring_x + radius * Math.sin(rad);
+    var y = ring_y + -1 * radius * Math.cos(rad);
+
+    var old = this.get('raphael_object');
+    if (old) {
+      old.remove();
+    }
+    this.set('raphael_object', parent.get('paper').circle(x, y, 20).attr({
+      fill: this.get('color'),
+      stroke: "#000",
+      "stroke-width": 2,
+      "stroke-opacity": 0.5,
+      "opacity": 0.7
+    }));
+  },
+  nodeTokenChanged: function() {
+    this.moveNode();
+  }.observes('content.token'),
+  didInsertElement: function() {
+    this.moveNode();
+  },
+  mouseDown: function(evt) {
+    console.log('select node');
+  }
+});
 
 
-// (function () {
-//   var paper = Raphael("canvas", 640, 480);
+CR.RingView = Em.View.extend({
+  ring: null,
+  paper: null,
+  ring_x: 250,
+  ring_y: 250,
+  radius: 200,
+  didInsertElement: function() {
+    var width = 500;
+    var height = 500;
+    this.set('paper', Raphael(this.$().attr('id'), width, height));
 
-//   var radius = 200;
-//   var ring_x = 320;
-//   var ring_y = 240;
+    var radius = this.get('radius');
+    var ring_x = this.get('ring_x');
+    var ring_y = this.get('ring_y');
 
-//   paper.circle(ring_x, ring_y, radius).attr({fill: "#223fa3", stroke: "#000", "stroke-width": 2, "stroke-opacity": 0.5});
-
-//   var big_two = new BigNumber(2);
-//   var max_token_full = big_two.pow(127);
-//   var max_token = Math.pow(2,127);
-//   var token_count = 3;
-//   var offset = 0;
-
-//   var arrow_len = 12;
-//   var arrow_width = 3;
-
-//   var ax = ring_x + radius;
-//   var ay = ring_y;
-//   var lx = ring_x + radius + arrow_len;
-//   var ly = ring_y + arrow_len;
-//   var arrow_attrs = {"stroke-width": arrow_width};
-//   paper.path('M' + ax + ' ' + ay + ' L' + lx + ' ' + ly).attr(arrow_attrs);
-
-//   lx = ring_x + radius - arrow_len;
-//   paper.path('M' + ax + ' ' + ay + ' L' + lx + ' ' + ly).attr(arrow_attrs);
-
-//   ax = ring_x - radius;
-//   lx = ring_x - radius - arrow_len;
-//   ly = ring_y - arrow_len;
-//   paper.path('M' + ax + ' ' + ay + ' L' + lx + ' ' + ly).attr(arrow_attrs);
-
-//   lx = ring_x - radius + arrow_len;
-//   paper.path('M' + ax + ' ' + ay + ' L' + lx + ' ' + ly).attr(arrow_attrs);
-
-
-//   var draw_tokens = function(tokens, color) {
-//     tokens.forEach(function(token) {
-//       var tokenf = token * 1;
-
-//       var deg = tokenf * 360 / max_token;
-//       var rad = Raphael.rad(deg);
-
-//       var x = ring_x + radius * Math.sin(rad);
-//       var y = ring_y + -1 * radius * Math.cos(rad);
-//       paper.circle(x, y, 20).attr({fill: color, stroke: "#000", "stroke-width": 2, "stroke-opacity": 0.5, "opacity": 0.7});
-//       paper.text(x, y, token);
-//     });
-//   };
-
-//   var calc_tokens = [];
-//   for (var i = 0; i < token_count; i++) {
-//     var full_token = max_token_full.multiply(i).divide(token_count);
-//     calc_tokens.push(full_token.intPart().toString());
-//   }
-//   draw_tokens(calc_tokens, 'green');
-
-//   var current_tokens = ['0', '56713727820156410577229101238628035242', '104589014539464777373489146682422959125'];
-//   draw_tokens(current_tokens, 'red');
-
-// }());
+    this.get('paper').circle(ring_x, ring_y, radius).attr({fill: "#223fa3", stroke: "#000", "stroke-width": 2, "stroke-opacity": 0.5});
+  }
+});
