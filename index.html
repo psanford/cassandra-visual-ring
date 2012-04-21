@@ -1,11 +1,48 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]--> <!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]--> <!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]--> <!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en"> <!--<![endif]-->
 <head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Cassandra Ring Visualizer</title>
+  <meta name="description" content="Visualize the ring">
+  <meta name="author" content="psanford">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="stylesheets/style.css?v=2">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
 </head>
 <body>
-  <div id="canvas"></div>
-  <script src="raphael-min.js"></script>
-  <script src="bignumber.js"></script>
-  <script src="ring.js"></script>
+  <div id="ring">
+    hello
+    <div id="canvas"></div>
+  </div>
+  <div id="controls">
+    <script type="text/x-handlebars">
+      <label for="nodeCount">Number of nodes: </label>
+      {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}}
+      <button class="btn-large btn-primary" {{action "newRing" target="CR.ringController"}}>New Ring</button>
+      {{#collection itemClass="ring-group" contentBinding="CR.ringController"}}
+        {{#collection contentBinding="content"}}
+          {{view Em.TextField classNames="token" valueBinding="content.token"}}
+          {{content.prettyPercentage}}%
+        {{/collection}}
+      {{/collection}}
+
+    </script>
+
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="javascripts/libs/jquery-1.7.1.min.js"%3E%3C/script%3E'))</script>
+  <script src="javascripts/libs/ember-0.9.7.1.min.js"></script>
+  <script src="javascripts/libs/raphael-min.js"></script>
+  <script src="javascripts/libs/bignumber.js"></script>
+  <script src="javascripts/ring.js"></script>
 </body>
 </html>

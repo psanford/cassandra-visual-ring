@@ -1,0 +1,23 @@
+.node-count {
+  width: 30px;
+}
+
+.ring-group {
+  border: 1px solid;
+  border-color: blue;
+}
+
+.token {
+  width: 300px;
+}
+
+#ring {
+  background-color: red;
+  width: 500px;
+}
+
+#controls {
+  position: absolute;
+  left: 520px;
+  top: 5px;
+}
