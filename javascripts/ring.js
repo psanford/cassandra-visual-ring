@@ -26,6 +26,9 @@ CR.Ring = Em.ArrayProxy.extend({
       this.pushObject(node);
     }.bind(this));
   },
+  delete: function() {
+    CR.get('ringController').removeObject(this);
+  },
   tokenChanged: function() {
     var tokens = this.map(function(item) {
       return [item, item.get('token') * 1];

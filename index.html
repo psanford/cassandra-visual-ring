@@ -37,6 +37,7 @@
           {{view Em.TextField classNames="token" valueBinding="content.token"}}
           {{content.prettyPercentage}}%
         {{/collection}}
+        <button class="btn-large btn-primary" {{action "delete" target="content"}}>Delete Ring</button>
       {{/collection}}
 
     </script>
