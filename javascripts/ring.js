@@ -43,7 +43,7 @@ CR.Ring = Em.ArrayProxy.extend({
     var delta = 360 / this.get('length');
     this.forEach(function(node, i) {
       var hue = (i+1) * delta;
-      node.set('color', Raphael.hsl(hue, 75, 50));
+      node.set('color', Raphael.hsl(hue, 50, 50));
     });
   }.observes('@each'),
   deleteRing: function() {
@@ -120,7 +120,8 @@ CR.TokenInfoView = Em.View.extend({
 });
 
 CR.NodeView = Em.View.extend({
-  raphael_object: null,
+  raphael_node: null,
+  raphael_arc: null,
   parent: function() {
     return this.nearestInstanceOf(CR.RingView);
   }.property().cacheable(),
@@ -141,35 +142,55 @@ CR.NodeView = Em.View.extend({
     var x = ring_x + radius * Math.sin(rad);
     var y = ring_y + -1 * radius * Math.cos(rad);
 
-    var old = this.get('raphael_object');
+    var old = this.get('raphael_node');
     if (old) {
       old.remove();
     }
-    var raphael_object = parent.get('paper').circle(x, y, 20).attr({
-      fill: node.get('color'),
+
+    var color = node.get('color');
+
+    var raphael_node = parent.get('paper').circle(x, y, 20).attr({
+      fill: color,
       stroke: "#000",
       "stroke-width": 2,
-      "stroke-opacity": 0.5,
-      "opacity": 0.7
+      "stroke-opacity": 0.5
     });
-    raphael_object.click(function() {
+
+    var prev = tokenf - (node.get('percentage') * max_token);
+
+    var pdeg = prev * 360 / max_token;
+    var prad = Raphael.rad(pdeg);
+
+    var px = ring_x + radius * Math.sin(prad);
+    var py = ring_y + -1 * radius * Math.cos(prad);
+
+    var large_arc = node.get('percentage') > 0.5 ? 1 : 0;
+
+    var path = 'M' + px +' ' + py + ' A 200 200 0 ' + large_arc + ' 1 ' + x + ' ' + y;
+
+    var raphael_arc = parent.get('paper').path(path).attr({
+      stroke: color,
+      "stroke-width": 4
+    });
+
+    raphael_node.click(function() {
       parent.get('ring').set('selected', node);
     });
-    this.set('raphael_object', raphael_object);
+    this.set('raphael_node', raphael_node);
   },
   nodeTokenChanged: function() {
     this.moveNode();
-  }.observes('content.token', 'content.color'),
+  }.observes('content.token', 'content.color', 'content.percentage'),
   nodeSelectedChanged: function() {
     var node = this.get('content');
     if (this.getPath('parent.ring.selected') == node) {
-      this.get('raphael_object').attr({
+      this.get('raphael_node').attr({
         stroke: "blue",
         "stroke-opacity": 1,
         "stroke-width": 2
       });
     } else {
-      this.get('raphael_object').attr({
+      this.get('raphael_node').attr({
         stroke: "#000",
         "stroke-opacity": 0.5,
         "stroke-width": 2
@@ -191,12 +212,6 @@ CR.RingView = Em.View.extend({
     var width = 500;
     var height = 500;
     this.set('paper', Raphael(this.$().attr('id'), width, height));
-
-    var radius = this.get('radius');
-    var ring_x = this.get('ring_x');
-    var ring_y = this.get('ring_y');
-
-    this.get('paper').circle(ring_x, ring_y, radius).attr({stroke: "#223fa3", "stroke-width": 4});
   }
 });
 
