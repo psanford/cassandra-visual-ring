@@ -271,3 +271,7 @@ CR.ColorIndicator = Em.View.extend({
     return Ember.Handlebars.compile('<div class=color-indicator {{bindAttr style="style"}}></div>');
   }.property().cacheable()
 });
+
+$(document).ready(function() {
+  CR.ringController.newRing();
+});
