@@ -15,6 +15,7 @@ var CR = Em.Application.create({
 
 CR.Node = Em.Object.extend({
   token: null,
+  color: 'blue',
   percentage: 0,
   delete: function() {
     this.set('token', null);
@@ -38,6 +39,14 @@ CR.Ring = Em.ArrayProxy.extend({
       self.pushObject(node);
     });
   },
+  updateHues: function() {
+    var delta = 360 / this.get('length');
+    this.forEach(function(node, i) {
+      var hue = (i+1) * delta;
+      console.log(Raphael.hsl(hue, 75, 50));
+      node.set('color', Raphael.hsl(hue, 75, 50));
+    });
+  }.observes('@each'),
   deleteRing: function() {
     CR.get('ringController').removeObject(this);
   },
@@ -113,7 +122,6 @@ CR.TokenInfoView = Em.View.extend({
 
 CR.NodeView = Em.View.extend({
   raphael_object: null,
-  color: 'green',
   parent: function() {
     return this.nearestInstanceOf(CR.RingView);
   }.property().cacheable(),
@@ -139,7 +147,7 @@ CR.NodeView = Em.View.extend({
       old.remove();
     }
     var raphael_object = parent.get('paper').circle(x, y, 20).attr({
-      fill: this.get('color'),
+      fill: node.get('color'),
       stroke: "#000",
       "stroke-width": 2,
       "stroke-opacity": 0.5,
@@ -225,4 +233,15 @@ CR.TokenSliderView = CR.RangeView.extend({
     }
     this.set('value', val);
   }
+});
+
+CR.ColorIndicator = Em.View.extend({
+  color:null,
+  tagName: '',
+  style: function() {
+    return "background-color: " + this.get('color') + ";";
+  }.property('color').cacheable(),
+  defaultTemplate: function() {
+    return Ember.Handlebars.compile('<div class=color-indicator {{bindAttr style="style"}}></div>');
+  }.property().cacheable()
 });

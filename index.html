@@ -34,6 +34,7 @@
       <button class="btn-large btn-primary" {{action "newRing" target="CR.ringController"}}>New Ring</button>
       {{#collection itemClass="ring-group" contentBinding="CR.ringController"}}
         {{#collection contentBinding="content" itemViewClass="CR.TokenInfoView"}}
+          {{view CR.ColorIndicator color=content.color}}
           {{view Em.TextField classNames="token" valueBinding="content.token"}}
           {{content.prettyPercentage}}%
           {{view CR.TokenSliderView valueBinding="content.token"}}

@@ -88,11 +88,6 @@ a:hover { color: #036; }
   width: 300px;
 }
 
-.token-info.selected {
-  border: 2px solid;
-  border-color: blue;
-}
-
 #ring {
   width: 500px;
 }
@@ -101,4 +96,21 @@ a:hover { color: #036; }
   position: absolute;
   left: 520px;
   top: 5px;
+}
+
+.color-indicator {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  position: relative;
+  top: 5px;
+  opacity: 0.9;
+  filter: alpha(opacity=50);
+  border: 1px solid;
+  border-color: rgba(0,0,0,0);
+}
+
+.token-info.selected .color-indicator {
+  border: 1px solid;
+  border-color: black;
 }
