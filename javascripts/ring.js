@@ -76,7 +76,9 @@ CR.Ring = Em.ArrayProxy.extend({
       return [item, item.get('token') * 1];
     });
 
-    if (tokens.length > 1) {
+    if (tokens.length == 1) {
+      tokens[0][0].set('percentage', 1);
+    } else if (tokens.length > 1) {
       tokens.sort(function(a,b) {
         return a[1] - b[1];
       });
@@ -161,6 +163,10 @@ CR.NodeView = Em.View.extend({
     });
 
     var percentage = node.get('percentage');
+    if (percentage == 1) {
+      //make drawing a full circle work without drawing a true full circle
+      percentage = 0.99;
+    }
     var prev = tokenf - (percentage * max_token);
 
     var pdeg = prev * 360 / max_token;
