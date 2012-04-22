@@ -11,6 +11,11 @@
   width: 300px;
 }
 
+.token-info.selected {
+  border: 2px solid;
+  border-color: blue;
+}
+
 #ring {
   width: 500px;
 }

@@ -33,7 +33,7 @@
       {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}}
       <button class="btn-large btn-primary" {{action "newRing" target="CR.ringController"}}>New Ring</button>
       {{#collection itemClass="ring-group" contentBinding="CR.ringController"}}
-        {{#collection contentBinding="content"}}
+        {{#collection contentBinding="content" itemViewClass="CR.TokenInfoView"}}
           {{view Em.TextField classNames="token" valueBinding="content.token"}}
           {{content.prettyPercentage}}%
           {{view CR.TokenSliderView valueBinding="content.token"}}
@@ -42,6 +42,7 @@
         <button class="btn-large btn-primary" {{action "addToken" target="content"}}>Add Token</button>
         <button class="btn-large btn-primary" {{action "deleteRing" target="content"}}>Delete Ring</button>
         <button class="btn-large btn-primary" {{action "rebalance" target="content"}}>Rebalance</button>
+        <br/>
       {{/collection}}
 
     </script>

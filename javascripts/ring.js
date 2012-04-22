@@ -29,12 +29,14 @@ CR.Node = Em.Object.extend({
 });
 
 CR.Ring = Em.ArrayProxy.extend({
+  selected: null,
   addBalancedNodes: function(count) {
     var tokens = CR.calculateBalancedTokens(count);
+    var self = this;
     $.each(tokens, function(i, token) {
       var node = CR.Node.create({token: token});
-      this.pushObject(node);
-    }.bind(this));
+      self.pushObject(node);
+    });
   },
   deleteRing: function() {
     CR.get('ringController').removeObject(this);
@@ -70,18 +72,18 @@ CR.Ring = Em.ArrayProxy.extend({
         return b[1] < a[1];
       });
       var max_token = CR.get('max_token_f');
-      for (var i = 0; i < tokens.length -1; i++) {
+      for (var i = tokens.length -1; i > 0; i--) {
         var token_node = tokens[i][0];
         var token = tokens[i][1];
-        var next = tokens[i+1][1];
-        var percent = (next - token) / max_token;
+        var next = tokens[i-1][1];
+        var percent = (token - next) / max_token;
         token_node.set('percentage', percent);
       }
 
-      var token_node = tokens[tokens.length-1][0];
-      var token = tokens[tokens.length-1][1];
-      var distance = max_token - token;
-      distance = distance + tokens[0][1];
+      var token_node = tokens[0][0];
+      var token = tokens[0][1];
+      var distance = token;
+      distance = distance + (max_token - tokens[tokens.length-1][1]);
       var percent = distance / max_token;
       token_node.set('percentage', percent);
     }
@@ -98,18 +100,33 @@ CR.set('ringController', Em.ArrayProxy.create({
   }
 }));
 
+CR.TokenInfoView = Em.View.extend({
+  classNames: ['token-info'],
+  classNameBindings: ['selected'],
+  selected: function() {
+    return this.get('content') == this.getPath('parentView.content.selected');
+  }.property('parentView.content.selected'),
+  mouseDown: function() {
+    this.setPath('parentView.content.selected', this.get('content'));
+  }
+});
+
 CR.NodeView = Em.View.extend({
   raphael_object: null,
   color: 'green',
+  parent: function() {
+    return this.nearestInstanceOf(CR.RingView);
+  }.property().cacheable(),
   moveNode: function() {
     var max_token = CR.get('max_token_f');
-    var token = this.getPath('content.token');
+    var node = this.get('content');
+    var token = node.get('token');
 
     var tokenf = token * 1;
     var deg = tokenf * 360 / max_token;
     var rad = Raphael.rad(deg);
 
-    var parent = this.nearestInstanceOf(CR.RingView);
+    var parent = this.get('parent');
     var radius = parent.get('radius');
     var ring_x = parent.get('ring_x');
     var ring_y = parent.get('ring_y');
@@ -121,22 +138,39 @@ CR.NodeView = Em.View.extend({
     if (old) {
       old.remove();
     }
-    this.set('raphael_object', parent.get('paper').circle(x, y, 20).attr({
+    var raphael_object = parent.get('paper').circle(x, y, 20).attr({
       fill: this.get('color'),
       stroke: "#000",
       "stroke-width": 2,
       "stroke-opacity": 0.5,
       "opacity": 0.7
-    }));
+    });
+    raphael_object.click(function() {
+      parent.get('ring').set('selected', node);
+    });
+    this.set('raphael_object', raphael_object);
   },
   nodeTokenChanged: function() {
     this.moveNode();
   }.observes('content.token'),
+  nodeSelectedChanged: function() {
+    var node = this.get('content');
+    if (this.getPath('parent.ring.selected') == node) {
+      this.get('raphael_object').attr({
+        stroke: "blue",
+        "stroke-opacity": 1,
+        "stroke-width": 2
+      });
+    } else {
+      this.get('raphael_object').attr({
+        stroke: "#000",
+        "stroke-opacity": 0.5,
+        "stroke-width": 2
+      });
+    }
+  }.observes('parent.ring.selected'),
   didInsertElement: function() {
     this.moveNode();
-  },
-  mouseDown: function(evt) {
-    console.log('select node');
   }
 });
 
