@@ -43,7 +43,6 @@ CR.Ring = Em.ArrayProxy.extend({
     var delta = 360 / this.get('length');
     this.forEach(function(node, i) {
       var hue = (i+1) * delta;
-      console.log(Raphael.hsl(hue, 75, 50));
       node.set('color', Raphael.hsl(hue, 75, 50));
     });
   }.observes('@each'),
@@ -160,7 +159,7 @@ CR.NodeView = Em.View.extend({
   },
   nodeTokenChanged: function() {
     this.moveNode();
-  }.observes('content.token'),
+  }.observes('content.token', 'content.color'),
   nodeSelectedChanged: function() {
     var node = this.get('content');
     if (this.getPath('parent.ring.selected') == node) {
@@ -236,11 +235,11 @@ CR.TokenSliderView = CR.RangeView.extend({
 });
 
 CR.ColorIndicator = Em.View.extend({
-  color:null,
+  node: null,
   tagName: '',
   style: function() {
-    return "background-color: " + this.get('color') + ";";
-  }.property('color').cacheable(),
+    return "background-color: " + this.getPath('node.color') + ";";
+  }.property('node.color'),
   defaultTemplate: function() {
     return Ember.Handlebars.compile('<div class=color-indicator {{bindAttr style="style"}}></div>');
   }.property().cacheable()
