@@ -145,6 +145,7 @@ CR.NodeView = Em.View.extend({
     var old = this.get('raphael_node');
     if (old) {
       old.remove();
+      this.get('raphael_arc').remove();
     }
 
     var color = node.get('color');
@@ -156,7 +157,8 @@ CR.NodeView = Em.View.extend({
       "stroke-opacity": 0.5
     });
 
-    var prev = tokenf - (node.get('percentage') * max_token);
+    var percentage = node.get('percentage');
+    var prev = tokenf - (percentage * max_token);
 
     var pdeg = prev * 360 / max_token;
     var prad = Raphael.rad(pdeg);
@@ -164,19 +166,20 @@ CR.NodeView = Em.View.extend({
     var px = ring_x + radius * Math.sin(prad);
     var py = ring_y + -1 * radius * Math.cos(prad);
 
-    var large_arc = node.get('percentage') > 0.5 ? 1 : 0;
+    var large_arc = percentage > 0.5 ? 1 : 0;
 
     var path = 'M' + px +' ' + py + ' A 200 200 0 ' + large_arc + ' 1 ' + x + ' ' + y;
 
     var raphael_arc = parent.get('paper').path(path).attr({
       stroke: color,
       "stroke-width": 4
-    });
+    }).toBack();
 
     raphael_node.click(function() {
       parent.get('ring').set('selected', node);
     });
     this.set('raphael_node', raphael_node);
+    this.set('raphael_arc', raphael_arc);
   },
   nodeTokenChanged: function() {
     this.moveNode();
