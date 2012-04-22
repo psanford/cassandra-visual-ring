@@ -75,10 +75,12 @@ CR.Ring = Em.ArrayProxy.extend({
     var tokens = this.map(function(item) {
       return [item, item.get('token') * 1];
     });
+
     if (tokens.length > 1) {
       tokens.sort(function(a,b) {
-        return b[1] < a[1];
+        return a[1] - b[1];
       });
+
       var max_token = CR.get('max_token_f');
       for (var i = tokens.length -1; i > 0; i--) {
         var token_node = tokens[i][0];
@@ -93,6 +95,7 @@ CR.Ring = Em.ArrayProxy.extend({
       var distance = token;
       distance = distance + (max_token - tokens[tokens.length-1][1]);
       var percent = distance / max_token;
+
       token_node.set('percentage', percent);
     }
   }.observes('@each.token')
