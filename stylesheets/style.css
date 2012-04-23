@@ -78,6 +78,12 @@ a:hover { color: #036; }
 
 body {
   background-color: #DDD;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .ring-group {
@@ -88,8 +94,11 @@ body {
   width: 320px;
 }
 
+table {
+  width: 100%;
+}
+
 .ring {
-  float: left;
   width: 500px;
 }
 

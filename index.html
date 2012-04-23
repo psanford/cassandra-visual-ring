@@ -34,10 +34,13 @@
   <div id=main>
   <script type="text/x-handlebars">
     {{#collection itemClass="ring-group clear" contentBinding="CR.ringController"}}
+    <table><tr>
+        <td>
       {{#view CR.RingView classNames="ring" ring=content}}
         {{collection contentBinding="ring" itemViewClass="CR.NodeView"}}
       {{/view}}
-
+        </td>
+        <td>
       <div class=controls>
       {{#collection contentBinding="content" itemViewClass="CR.TokenInfoView"}}
         {{view CR.ColorIndicator node=content}}
@@ -52,6 +55,9 @@
         <button class="btn-large btn-primary" {{action "deleteRing" target="content"}}>Delete Ring</button>
       </div>
       </div>
+      </td>
+      </tr>
+      </table>
       {{/collection}}
     </div>
   </script>
