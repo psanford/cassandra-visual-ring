@@ -34,6 +34,7 @@ CR.Node = Em.Object.extend({
   percentage: 0,
   delete: function() {
     this.set('token', null);
+    return false;
   },
   prettyPercentage: function() {
     var p = Math.round(100 * this.get('percentage')) + '';

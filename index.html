@@ -18,37 +18,35 @@
   <![endif]-->
 </head>
 <body>
-  <div id="ring">
-    <script type="text/x-handlebars">
-      {{#collection contentBinding="CR.ringController"}}
-        {{#view CR.RingView ring=content}}
-          {{collection contentBinding="ring" itemViewClass="CR.NodeView"}}
-        {{/view}}
+  <script type="text/x-handlebars">
+    {{#collection itemClass="ring-group" contentBinding="CR.ringController"}}
+      {{#view CR.RingView classNames="ring" ring=content}}
+        {{collection contentBinding="ring" itemViewClass="CR.NodeView"}}
+      {{/view}}
+
+      <div class=controls>
+      {{#collection contentBinding="content" itemViewClass="CR.TokenInfoView"}}
+        {{view CR.ColorIndicator node=content}}
+        {{view Em.TextField classNames="token" valueBinding="content.token"}}
+        {{content.prettyPercentage}}%
+        {{view CR.TokenSliderView valueBinding="content.token"}}
+        <a href="#" class=delete {{action "delete" target="content"}}>Delete</a>
       {{/collection}}
-    </script>
-  </div>
-  <div id="controls">
-    <script type="text/x-handlebars">
-      <label for="nodeCount">Number of nodes: </label>
-      {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}}
-      <button class="btn-large btn-primary" {{action "newRing" target="CR.ringController"}}>New Ring</button>
-      {{#collection itemClass="ring-group" contentBinding="CR.ringController"}}
-        {{#collection contentBinding="content" itemViewClass="CR.TokenInfoView"}}
-          {{view CR.ColorIndicator node=content}}
-          {{view Em.TextField classNames="token" valueBinding="content.token"}}
-          {{content.prettyPercentage}}%
-          {{view CR.TokenSliderView valueBinding="content.token"}}
-          <a href="#" {{action "delete" target="content"}}>Delete</a>
-        {{/collection}}
+      <div class=control-buttons>
         <button class="btn-large btn-primary" {{action "addToken" target="content"}}>Add Token</button>
         <button class="btn-large btn-primary" {{action "deleteRing" target="content"}}>Delete Ring</button>
         <button class="btn-large btn-primary" {{action "rebalance" target="content"}}>Rebalance</button>
-        <br/>
+      </div>
       {{/collection}}
+      </div>
+    <div class=global-controls>
+    Number of nodes:
+    {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}}
+    <button class="btn-large btn-primary" {{action "newRing" target="CR.ringController"}}>New Ring</button>
+    </div>
 
-    </script>
+  </script>
 
-  </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="javascripts/libs/jquery-1.7.1.min.js"%3E%3C/script%3E'))</script>

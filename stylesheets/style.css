@@ -80,22 +80,44 @@ a:hover { color: #036; }
 }
 
 .ring-group {
-  border: 1px solid;
-  border-color: blue;
+  position: relative;
+  background-color: #EEE;
 }
 
 .token {
   width: 320px;
 }
 
-#ring {
+.ring {
   width: 500px;
 }
 
-#controls {
+.controls {
+  padding: 10px;
+  background-color: white;
   position: absolute;
-  left: 520px;
-  top: 5px;
+  right: 0px;
+  top: 30px;
+
+  box-shadow: rgba(0, 0, 0, 0.2) -4px 4px 4px 0;
+  -moz-box-shadow: rgba(0, 0, 0, 0.2) -4px 4px 4px 0;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.2) -4px 4px 4px 0;
+}
+
+.control-buttons {
+  padding-top: 10px;
+}
+
+.global-controls {
+  position: absolute;
+  right: 10px;
+  padding: 10px 0px;
+
+  background-color: white;
+}
+
+.delete {
+  text-decoration: none;
 }
 
 .color-indicator {
@@ -117,4 +139,8 @@ a:hover { color: #036; }
 
 .no-range input[type=range] {
   display: none;
+}
+
+.clear {
+  clear: both;
 }
