@@ -65,12 +65,21 @@ CR.Ring = Em.ArrayProxy.extend({
     CR.get('ringController').removeObject(this);
   },
   addToken: function() {
-    var i = this.get('firstObject').get('token');
-    i++;
-    while (this.some(function(item) { return item.get('token') == i;})) {
-      i++;
+    var tokens = this.map(function(n) { return [n.get('percentage'), n]; });
+    tokens.sort(function (a,b) {
+      return b[0] - a[0];
+    });
+
+    var max_token = CR.get('max_token_f');
+
+    var offset = max_token * tokens[0][0] / 2;
+
+    var new_token = tokens[0][1].get('token') - offset;
+    if (new_token < 0) {
+      new_token = max_token + new_token;
     }
-    this.pushObject(CR.Node.create({token: i}));
+    var node = CR.Node.create({token: CR.floatTokenToString(new_token)});
+    this.pushObject(node);
   },
   rebalance: function() {
     var new_tokens = CR.calculateBalancedTokens(this.get('length'));
