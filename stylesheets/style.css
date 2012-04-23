@@ -85,7 +85,7 @@ a:hover { color: #036; }
 }
 
 .token {
-  width: 300px;
+  width: 320px;
 }
 
 #ring {
@@ -113,4 +113,8 @@ a:hover { color: #036; }
 .token-info.selected .color-indicator {
   border: 1px solid;
   border-color: black;
+}
+
+.no-range input[type=range] {
+  display: none;
 }

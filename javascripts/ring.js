@@ -272,6 +272,11 @@ CR.ColorIndicator = Em.View.extend({
   }.property().cacheable()
 });
 
+
+if (!Modernizr.inputtypes.range) {
+  $('body').toggleClass('no-range');
+}
+
 $(document).ready(function() {
   CR.ringController.newRing();
 });
