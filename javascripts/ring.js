@@ -10,6 +10,21 @@ var CR = Em.Application.create({
       tokens.push(full_token.intPart().toString());
     }
     return tokens;
+  },
+  floatTokenToString: function(token) {
+    token = token + '';
+    var match = token.match(/([0-9.]+)e[-+]?([0-9]+)/);
+    if (match) {
+      var parts = match[1].split('.');
+      token = parts.join('');
+      var zeros = match[2] * 1;
+      zeros = zeros - parts[1].length;
+      while (zeros > 0) {
+        token = token + '' + '0';
+        zeros--;
+      }
+    }
+    return token;
   }
 });
 
@@ -144,6 +159,9 @@ CR.NodeView = Em.View.extend({
     var ring_x = parent.get('ring_x');
     var ring_y = parent.get('ring_y');
 
+    var offset_left = parent.get('offset_left');
+    var offset_top = parent.get('offset_top');
+
     var x = ring_x + radius * Math.sin(rad);
     var y = ring_y + -1 * radius * Math.cos(rad);
 
@@ -159,7 +177,8 @@ CR.NodeView = Em.View.extend({
       fill: color,
       stroke: "#000",
       "stroke-width": 2,
-      "stroke-opacity": 0.5
+      "stroke-opacity": 0.5,
+      cursor: "pointer"
     });
 
     var percentage = node.get('percentage');
@@ -187,6 +206,25 @@ CR.NodeView = Em.View.extend({
     raphael_node.click(function() {
       parent.get('ring').set('selected', node);
     });
+
+    raphael_node.mousedown(function() {
+      var move_handler = function(e) {
+        var x = e.pageX - offset_left;
+        var y = e.pageY - offset_top;
+
+        var angle = (Raphael.angle(250, 250, x, y) + 270) % 360;
+        var token = max_token * angle / 360;
+
+        node.set('token', CR.floatTokenToString(token));
+      };
+      var up_handler = function() {
+        $(document.body).unbind('mousemove', move_handler);
+        $(document.body).unbind('mouseup', up_handler);
+      };
+      $(document.body).bind('mouseup', up_handler);
+      $(document.body).bind('mousemove', move_handler);
+    });
+
     this.set('raphael_node', raphael_node);
     this.set('raphael_arc', raphael_arc);
   },
@@ -220,9 +258,14 @@ CR.RingView = Em.View.extend({
   ring_x: 250,
   ring_y: 250,
   radius: 200,
+  offset_left: null,
+  offset_top: null,
   didInsertElement: function() {
     var width = 500;
     var height = 500;
+
+    this.set('offset_left', this.$().offset().left);
+    this.set('offset_top', this.$().offset().top);
     this.set('paper', Raphael(this.$().attr('id'), width, height));
   }
 });
@@ -246,18 +289,7 @@ CR.TokenSliderView = CR.RangeView.extend({
   maxBinding: 'CR.max_token_f',
   change: function() {
     var val = this.$().prop('value');
-    var match = val.match(/([0-9.]+)e[-+]?([0-9]+)/);
-    if (match) {
-      var parts = match[1].split('.');
-      val = parts.join('');
-      var zeros = match[2] * 1;
-      zeros = zeros - parts[1].length;
-      while (zeros > 0) {
-        val = val + '' + '0';
-        zeros--;
-      }
-    }
-    this.set('value', val);
+    this.set('value', CR.floatTokenToString(val));
   }
 });
 
