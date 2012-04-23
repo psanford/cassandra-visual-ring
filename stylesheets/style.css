@@ -89,15 +89,17 @@ body {
 }
 
 .ring {
+  float: left;
   width: 500px;
 }
 
 .controls {
   padding: 10px;
   background-color: white;
-  position: absolute;
+  float: right;
+  margin-top: 30px;
+
   right: 0px;
-  top: 30px;
 
   box-shadow: rgba(0, 0, 0, 0.2) -4px 4px 4px 0;
   -moz-box-shadow: rgba(0, 0, 0, 0.2) -4px 4px 4px 0;
