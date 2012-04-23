@@ -11,6 +11,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <link href='http://fonts.googleapis.com/css?family=Vollkorn:400italic,400' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="stylesheets/style.css?v=2">
 
   <!--[if lt IE 9]>
@@ -18,6 +19,19 @@
   <![endif]-->
 </head>
 <body>
+  <div id=header>
+    <div id=title>Cassandra Ring Tool</div>
+
+    <div class=global-controls>
+      <script type="text/x-handlebars">
+        <div class=new-ring-title>New Ring</div>
+        Tokens:
+        {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}}
+        <button class="btn-large btn-primary" {{action "newRing" target="CR.ringController"}}>New Ring</button>
+      </script>
+    </div>
+  </div>
+  <div id=main>
   <script type="text/x-handlebars">
     {{#collection itemClass="ring-group" contentBinding="CR.ringController"}}
       {{#view CR.RingView classNames="ring" ring=content}}
@@ -34,19 +48,14 @@
       {{/collection}}
       <div class=control-buttons>
         <button class="btn-large btn-primary" {{action "addToken" target="content"}}>Add Token</button>
-        <button class="btn-large btn-primary" {{action "deleteRing" target="content"}}>Delete Ring</button>
         <button class="btn-large btn-primary" {{action "rebalance" target="content"}}>Rebalance</button>
+        <button class="btn-large btn-primary" {{action "deleteRing" target="content"}}>Delete Ring</button>
       </div>
       {{/collection}}
       </div>
-    <div class=global-controls>
-    Number of nodes:
-    {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}}
-    <button class="btn-large btn-primary" {{action "newRing" target="CR.ringController"}}>New Ring</button>
     </div>
-
   </script>
-
+  </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="javascripts/libs/jquery-1.7.1.min.js"%3E%3C/script%3E'))</script>

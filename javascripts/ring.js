@@ -134,7 +134,7 @@ CR.set('ringController', Em.ArrayProxy.create({
   newRing: function() {
     var ring = CR.Ring.create({content: []});
     ring.addBalancedNodes(this.get('nodeCount'));
-    this.pushObject(ring);
+    this.unshiftObject(ring);
   }
 }));
 
