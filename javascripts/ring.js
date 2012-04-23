@@ -156,9 +156,19 @@ CR.NodeView = Em.View.extend({
     return this.nearestInstanceOf(CR.RingView);
   }.property().cacheable(),
   moveNode: function() {
+    var old = this.get('raphael_node');
+    if (old) {
+      old.remove();
+      this.get('raphael_arc').remove();
+    }
+
     var max_token = CR.get('max_token_f');
     var node = this.get('content');
     var token = node.get('token');
+
+    if (token === null) {
+      return;
+    }
 
     var tokenf = token * 1;
     var deg = tokenf * 360 / max_token;
@@ -174,12 +184,6 @@ CR.NodeView = Em.View.extend({
 
     var x = ring_x + radius * Math.sin(rad);
     var y = ring_y + -1 * radius * Math.cos(rad);
-
-    var old = this.get('raphael_node');
-    if (old) {
-      old.remove();
-      this.get('raphael_arc').remove();
-    }
 
     var color = node.get('color');
 
