@@ -42,7 +42,12 @@ CR.Node = Em.Object.extend({
       p = '0' + p;
     }
     return p;
-  }.property('percentage')
+  }.property('percentage'),
+  setTokenPercent: function(percent) {
+    var max_token = CR.get('MAX_TOKEN');
+    var big_percent = new BigNumber(percent);
+    this.set('token', big_percent.multiply(max_token).intPart().toString());
+  }
 });
 
 CR.Ring = Em.ArrayProxy.extend({
@@ -71,15 +76,15 @@ CR.Ring = Em.ArrayProxy.extend({
       return b[0] - a[0];
     });
 
-    var max_token = CR.get('max_token_f');
+    var max_token = CR.get('MAX_TOKEN');
 
-    var offset = max_token * tokens[0][0] / 2;
+    var offset = max_token.multiply(new BigNumber(tokens[0][0])).divide(new BigNumber(2));
 
-    var new_token = tokens[0][1].get('token') - offset;
+    var new_token = new BigNumber(tokens[0][1].get('token')).subtract(offset);
     if (new_token < 0) {
-      new_token = max_token + new_token;
+      new_token = max_token.add(new_token);
     }
-    var node = CR.Node.create({token: CR.floatTokenToString(new_token)});
+    var node = CR.Node.create({token: new_token.intPart().toString()});
     this.pushObject(node);
   },
   rebalance: function() {
@@ -238,9 +243,7 @@ CR.NodeView = Em.View.extend({
         var y = e.pageY - offset_top;
 
         var angle = (Raphael.angle(250, 250, x, y) + 270) % 360;
-        var token = max_token * angle / 360;
-
-        node.set('token', CR.floatTokenToString(token));
+        node.setTokenPercent(angle / 360);
       };
       var up_handler = function() {
         $(document.body).unbind('mousemove', move_handler);
@@ -310,12 +313,21 @@ CR.RangeView = Ember.View.extend({
 });
 
 CR.TokenSliderView = CR.RangeView.extend({
+  token: null,
   min: 0,
-  maxBinding: 'CR.max_token_f',
-  change: function() {
-    var val = this.$().prop('value');
-    this.set('value', CR.floatTokenToString(val));
-  }
+  max: 10000,
+  _value: null,
+  value: function(key, val) {
+    if (val !== undefined) {
+      var percent = val / this.get('max');
+      var max_token = CR.get('MAX_TOKEN');
+
+      var token = max_token.multiply(new BigNumber(percent)).intPart().toString();
+      this.set('token', token);
+    }
+    var max_token = CR.get('max_token_f');
+    return this.get('max') * (this.get('token') /  max_token);
+  }.property('token', '_value').cacheable()
 });
 
 CR.ColorIndicator = Em.View.extend({
@@ -328,7 +340,6 @@ CR.ColorIndicator = Em.View.extend({
     return Ember.Handlebars.compile('<div class=color-indicator {{bindAttr style="view.style"}}></div>');
   }.property().cacheable()
 });
-
 
 if (!Modernizr.inputtypes.range) {
   $('body').toggleClass('no-range');
