@@ -308,13 +308,13 @@ CR.TokenSliderView = CR.RangeView.extend({
 });
 
 CR.ColorIndicator = Em.View.extend({
-  node: null,
+  color: null,
   tagName: '',
   style: function() {
-    return "background-color: " + this.getPath('node.color') + ";";
-  }.property('node.color'),
+    return "background-color: " + this.get('color') + ";";
+  }.property('color'),
   defaultTemplate: function() {
-    return Ember.Handlebars.compile('<div class=color-indicator {{bindAttr style="style"}}></div>');
+    return Ember.Handlebars.compile('<div class=color-indicator {{bindAttr style="view.style"}}></div>');
   }.property().cacheable()
 });
 

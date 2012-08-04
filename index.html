@@ -33,39 +33,44 @@
   </div>
   <div id=main>
   <script type="text/x-handlebars">
-    {{#collection itemClass="ring-group clear" contentBinding="CR.ringController"}}
-    <table><tr>
-        <td>
-      {{#view CR.RingView classNames="ring" ring=content}}
-        {{collection contentBinding="ring" itemViewClass="CR.NodeView"}}
+    {{#each ring in CR.ringController}}
+    <table class="ring-group clear"><tr>
+      <td>
+      {{#view CR.RingView classNames="ring" ring=ring}}
+      {{#each node in ring}}
+        {{view CR.NodeView contentBinding="node"}}
+      {{/each}}
       {{/view}}
         </td>
         <td>
       <div class=controls>
-      {{#collection contentBinding="content" itemViewClass="CR.TokenInfoView"}}
-        {{view CR.ColorIndicator node=content}}
-        {{view Em.TextField classNames="token" valueBinding="content.token"}}
-        {{content.prettyPercentage}}%
-        {{view CR.TokenSliderView valueBinding="content.token"}}
-        <a href="#" class=delete {{action "delete" target="content"}}>Delete</a>
-      {{/collection}}
+        {{#each node in ring}}
+        {{#view CR.TokenInfoView}}
+          {{view CR.ColorIndicator colorBinding="node.color"}}
+          {{view Em.TextField classNames="token" valueBinding="node.token"}}
+          {{content.prettyPercentage}}%
+          {{view CR.TokenSliderView valueBinding="node.token"}}
+          <a href="#" class=delete {{action "delete" target="node"}}>Delete</a>
+        {{/view}}
+      {{/each}}
       <div class=control-buttons>
-        <button class="btn-large btn-primary" {{action "addToken" target="content"}}>Add Token</button>
-        <button class="btn-large btn-primary" {{action "rebalance" target="content"}}>Rebalance</button>
-        <button class="btn-large btn-primary" {{action "deleteRing" target="content"}}>Delete Ring</button>
+        <button class="btn-large btn-primary" {{action "addToken" target="ring"}}>Add Token</button>
+        <button class="btn-large btn-primary" {{action "rebalance" target="ring"}}>Rebalance</button>
+        <button class="btn-large btn-primary" {{action "deleteRing" target="ring"}}>Delete Ring</button>
       </div>
       </div>
       </td>
       </tr>
       </table>
-      {{/collection}}
+      {{/each}}
     </div>
   </script>
   </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="javascripts/libs/jquery-1.7.1.min.js"%3E%3C/script%3E'))</script>
-  <script src="javascripts/libs/ember-0.9.7.1.min.js"></script>
+  <script src="javascripts/libs/handlebars-1.0.0.beta.6.js"></script>
+  <script src="javascripts/libs/ember-1.0.pre.min.js"></script>
   <script src="javascripts/libs/raphael-min.js"></script>
   <script src="javascripts/libs/bignumber.js"></script>
   <script src="javascripts/libs/modernizr.js"></script>
