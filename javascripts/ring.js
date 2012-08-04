@@ -139,13 +139,15 @@ CR.set('ringController', Em.ArrayProxy.create({
 }));
 
 CR.TokenInfoView = Em.View.extend({
+  selectedNode: null,
+  node: null,
   classNames: ['token-info'],
   classNameBindings: ['selected'],
   selected: function() {
-    return this.get('content') == this.getPath('parentView.content.selected');
-  }.property('parentView.content.selected'),
+    return this.get('node') == this.get('selectedNode');
+  }.property('node', 'selectedNode'),
   mouseDown: function() {
-    this.setPath('parentView.content.selected', this.get('content'));
+    this.setPath('selectedNode', this.get('node'));
   }
 });
 
@@ -187,13 +189,21 @@ CR.NodeView = Em.View.extend({
 
     var color = node.get('color');
 
-    var raphael_node = parent.get('paper').circle(x, y, 20).attr({
+    var node_attrs = {
       fill: color,
       stroke: "#000",
       "stroke-width": 2,
       "stroke-opacity": 0.5,
       cursor: "pointer"
-    });
+    };
+
+    if (this.getPath('parent.ring.selected') == node) {
+      node_attrs['stroke'] = 'blue';
+      node_attrs['stroke-opacity'] = 1;
+      node_attrs['stroke-width'] = 2;
+    }
+
+    var raphael_node = parent.get('paper').circle(x, y, 20).attr(node_attrs);
 
     var percentage = node.get('percentage');
     if (percentage == 1) {
@@ -222,6 +232,7 @@ CR.NodeView = Em.View.extend({
     });
 
     raphael_node.mousedown(function() {
+      parent.get('ring').set('selected', node);
       var move_handler = function(e) {
         var x = e.pageX - offset_left;
         var y = e.pageY - offset_top;

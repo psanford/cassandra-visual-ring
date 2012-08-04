@@ -36,7 +36,7 @@
     {{#each ring in CR.ringController}}
     <table class="ring-group clear"><tr>
       <td>
-      {{#view CR.RingView classNames="ring" ring=ring}}
+      {{#view CR.RingView classNames="ring" ringBinding="ring"}}
       {{#each node in ring}}
         {{view CR.NodeView contentBinding="node"}}
       {{/each}}
@@ -45,7 +45,7 @@
         <td>
       <div class=controls>
         {{#each node in ring}}
-        {{#view CR.TokenInfoView}}
+        {{#view CR.TokenInfoView nodeBinding="node" selectedNodeBinding="ring.selected"}}
           {{view CR.ColorIndicator colorBinding="node.color"}}
           {{view Em.TextField classNames="token" valueBinding="node.token"}}
           {{content.prettyPercentage}}%
