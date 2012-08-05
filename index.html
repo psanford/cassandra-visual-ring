@@ -50,7 +50,7 @@
         {{#view CR.TokenInfoView nodeBinding="node" selectedNodeBinding="ring.selected"}}
           {{view CR.ColorIndicator colorBinding="node.color"}}
           {{view Em.TextField classNames="token" valueBinding="node.token"}}
-          {{content.prettyPercentage}}%
+          {{node.prettyPercentage}}%
           {{view CR.TokenSliderView tokenBinding="node.token"}}
           <a href="#" class="delete btn" {{action "delete" target="node"}}>Delete</a>
         {{/view}}
