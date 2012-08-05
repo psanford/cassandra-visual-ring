@@ -175,6 +175,11 @@ table {
   display: none;
 }
 
+.import-text {
+  width: 95%;
+  height: 200px;
+}
+
 .clear {
   clear: both;
 }

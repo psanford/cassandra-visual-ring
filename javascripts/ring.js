@@ -140,8 +140,53 @@ CR.set('ringController', Em.ArrayProxy.create({
     var ring = CR.Ring.create({content: []});
     ring.addBalancedNodes(this.get('nodeCount'));
     this.unshiftObject(ring);
+  },
+  importRing: function(tokens) {
+    var ring = CR.Ring.create({content: []});
+    var self = this;
+    $.each(tokens, function(i, token) {
+      var node = CR.Node.create({token: token});
+      ring.pushObject(node);
+    });
+    this.unshiftObject(ring);
+  },
+  importRingDialog: function() {
+    var view = CR.ImportView.create();
+    view.append();
   }
 }));
+
+CR.ImportView = Em.View.extend({
+  templateName: 'import',
+  nodetoolOutput: null,
+  tokens: Em.A(),
+  close: function() {
+    this.remove();
+  },
+  import: function() {
+    var tokens = this.get('tokens');
+    CR.get('ringController').importRing(tokens);
+    this.remove();
+  },
+  parseTokens: function() {
+    var output = this.get('nodetoolOutput') ;
+    var lines = output.split("\n");
+    var tokens = [];
+    $.each(lines, function(i, line) {
+      var match = line.match(/%\s+(\d+)\s*$/);
+      if (match) {
+        tokens.push(match[1]);
+      }
+    });
+    this.set('tokens', tokens);
+  }.observes('nodetoolOutput'),
+  modalBackDrop: Em.View.extend({
+    classNames: ['modal-backdrop', 'fade', 'in'],
+    mouseDown: function() {
+      this.get('parentView').close();
+    }
+  })
+});
 
 CR.TokenInfoView = Em.View.extend({
   selectedNode: null,
