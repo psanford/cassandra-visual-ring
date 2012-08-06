@@ -52,6 +52,10 @@ CR.Node = Em.Object.extend({
 
 CR.Ring = Em.ArrayProxy.extend({
   selected: null,
+  init: function() {
+    this._super();
+    this.set('content', []);
+  },
   addBalancedNodes: function(count) {
     var tokens = CR.calculateBalancedTokens(count);
     var self = this;
@@ -136,13 +140,30 @@ CR.Ring = Em.ArrayProxy.extend({
 CR.set('ringController', Em.ArrayProxy.create({
   content: [],
   nodeCount: 3,
+  load: function() {
+    var params = location.href;
+    var rings = {};
+    var self = this;
+    params.replace(/([^?#=&]+)=([^#=&]+)&?/g, function(m, ringid, tokens) {
+      var ring = CR.Ring.create();
+      $.each(tokens.split(','), function(i, token) {
+        var node = CR.Node.create({token: token});
+        ring.pushObject(node);
+      });
+      self.pushObject(ring);
+    });
+    if (this.get('length') == 0) {
+      console.log('newRing');
+      this.newRing();
+    }
+  },
   newRing: function() {
-    var ring = CR.Ring.create({content: []});
+    var ring = CR.Ring.create();
     ring.addBalancedNodes(this.get('nodeCount'));
     this.unshiftObject(ring);
   },
   importRing: function(tokens) {
-    var ring = CR.Ring.create({content: []});
+    var ring = CR.Ring.create();
     var self = this;
     $.each(tokens, function(i, token) {
       var node = CR.Node.create({token: token});
@@ -402,5 +423,5 @@ if (!Modernizr.inputtypes.range) {
 }
 
 $(document).ready(function() {
-  CR.ringController.newRing();
+  CR.ringController.load();
 });
