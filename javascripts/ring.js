@@ -325,6 +325,17 @@ CR.NodeView = Em.View.extend({
   }
 });
 
+CR.TokenTextField = Em.TextField.extend({
+  token: null,
+  value: function(key, val) {
+    if (val !== undefined) {
+      console.log('val', key, val);
+      this.set('token', (''+val).replace(/[^0-9]/g, ''));
+    }
+    return this.get('token');
+  }.property('token').cacheable()
+});
+
 CR.RingView = Em.View.extend({
   ring: null,
   paper: null,
