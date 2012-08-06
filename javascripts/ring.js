@@ -140,6 +140,15 @@ CR.Ring = Em.ArrayProxy.extend({
 CR.set('ringController', Em.ArrayProxy.create({
   content: [],
   nodeCount: 3,
+  url: function() {
+    var base = location.href.match(/^([^?#]+)/)[1];
+    var token_sets = [];
+    this.forEach(function(ring, i) {
+      var tokens = ring.mapProperty('token');
+      token_sets.push('r' + i + '=' + tokens.join(','));
+    });
+    return base + '#' + token_sets.join('&');
+  }.property('@each').cacheable(),
   load: function() {
     var params = location.href;
     var rings = {};
@@ -173,6 +182,10 @@ CR.set('ringController', Em.ArrayProxy.create({
   },
   importRingDialog: function() {
     var view = CR.ImportView.create();
+    view.append();
+  },
+  makeLink: function() {
+    var view = CR.LinkView.create({url: this.get('url')});
     view.append();
   }
 }));
@@ -208,6 +221,21 @@ CR.ImportView = Em.View.extend({
     }
   })
 });
+
+CR.LinkView = Em.View.extend({
+  templateName: 'link',
+  url: null,
+  close: function() {
+    this.remove();
+  },
+  modalBackDrop: Em.View.extend({
+    classNames: ['modal-backdrop', 'fade', 'in'],
+    mouseDown: function() {
+      this.get('parentView').close();
+    }
+  })
+});
+
 
 CR.TokenInfoView = Em.View.extend({
   selectedNode: null,

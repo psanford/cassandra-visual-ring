@@ -180,6 +180,12 @@ table {
   height: 200px;
 }
 
+.link-field {
+  width: 95%;
+  height: 20px;
+  font-size:18px;
+}
+
 .clear {
   clear: both;
 }

@@ -30,6 +30,7 @@
         {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}}
         <button class="btn" {{action "newRing" target="CR.ringController"}}>New Ring</button>
         <button class="btn" {{action "importRingDialog" target="CR.ringController"}}>Import Ring</button>
+        <button class="btn" {{action "makeLink" target="CR.ringController"}}>Make Link</button>
       </script>
     </div>
   </div>
@@ -89,6 +90,22 @@
     <div class=modal-footer>
       <a href="#" class=btn {{action "close"}}>Cancel</a>
       <a href="#" class=btn {{action "import"}}>Import</a>
+    </div>
+  </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="link">
+  {{view modalBackDrop}}
+  <div class=modal>
+    <div class=modal-header>
+      <a {{action "close"}} class="close" data-dismiss="modal">×</a>
+      <h3>Ring URL</h3>
+    </div>
+    <div class=modal-body>
+      {{view Em.TextField classNames="link-field" valueBinding="url"}}
+    </div>
+    <div class=modal-footer>
+      <a href="#" class=btn {{action "close"}}>Cancel</a>
     </div>
   </div>
 </script>
