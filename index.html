@@ -25,12 +25,22 @@
 
     <div class=global-controls>
       <script type="text/x-handlebars">
-        <div class=new-ring-title>New Ring</div>
-        Tokens:
-        {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}}
-        <button class="btn" {{action "newRing" target="CR.ringController"}}>New Ring</button>
-        <button class="btn" {{action "importRingDialog" target="CR.ringController"}}>Import Ring</button>
-        <button class="btn" {{action "makeLink" target="CR.ringController"}}>Make Link</button>
+        <div class="btn-group control-buttons">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            Actions
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu pull-right">
+            <li><a href="#" {{action "newRingDialog" target="CR.ringController"}}>New Ring</a></li>
+            <li><a href="#" {{action "importRingDialog" target="CR.ringController"}}>Import Ring</a></li>
+            <li><a href="#" {{action "makeLink" target="CR.ringController"}}>Make Link</a></li>
+          </ul>
+        </div>
+
+        <!-- {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}} -->
+        <!-- <button class="btn" {{action "newRing" target="CR.ringController"}}>New Ring</button> -->
+        <!-- <button class="btn" {{action "importRingDialog" target="CR.ringController"}}>Import Ring</button> -->
+        <!-- <button class="btn" {{action "makeLink" target="CR.ringController"}}>Make Link</button> -->
       </script>
     </div>
   </div>
@@ -102,9 +112,27 @@
       <h3>Ring URL</h3>
     </div>
     <div class=modal-body>
-      {{view Em.TextField classNames="link-field" valueBinding="url"}}
+      {{view Em.TextField id="link-field" valueBinding="url"}}
     </div>
     <div class=modal-footer>
+      <a href="#" class=btn {{action "close"}}>Cancel</a>
+    </div>
+  </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="new-ring">
+  {{view modalBackDrop}}
+  <div class=modal>
+    <div class=modal-header>
+      <a {{action "close"}} class="close" data-dismiss="modal">×</a>
+      <h3>New Ring</h3>
+    </div>
+    <div class=modal-body>
+      Token Count:
+      {{view Em.TextField classNames="node-count" name="nodeCount" valueBinding="CR.ringController.nodeCount"}}
+    </div>
+    <div class=modal-footer>
+      <a href="#" class=btn {{action "import"}}>New Ring</a>
       <a href="#" class=btn {{action "close"}}>Cancel</a>
     </div>
   </div>
@@ -114,6 +142,7 @@
   <script>!window.jQuery && document.write(unescape('%3Cscript src="javascripts/libs/jquery-1.7.1.min.js"%3E%3C/script%3E'))</script>
   <script src="javascripts/libs/handlebars-1.0.0.beta.6.js"></script>
   <script src="javascripts/libs/ember-1.0.pre.min.js"></script>
+  <script src="javascripts/libs/bootstrap-dropdown.js"></script>
   <script src="javascripts/libs/raphael-min.js"></script>
   <script src="javascripts/libs/bignumber.js"></script>
   <script src="javascripts/libs/modernizr.js"></script>

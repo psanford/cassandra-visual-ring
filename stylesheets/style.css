@@ -140,7 +140,7 @@ table {
 }
 
 .control-buttons {
-  padding-top: 10px;
+  padding: 20px 0px 0px 0px;
 }
 
 .global-controls {
@@ -180,7 +180,7 @@ table {
   height: 200px;
 }
 
-.link-field {
+#link-field {
   width: 95%;
   height: 20px;
   font-size:18px;

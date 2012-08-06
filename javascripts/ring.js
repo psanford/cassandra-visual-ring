@@ -184,23 +184,36 @@ CR.set('ringController', Em.ArrayProxy.create({
     var view = CR.ImportView.create();
     view.append();
   },
+  newRingDialog: function() {
+    var view = CR.NewRingView.create();
+    view.append();
+  },
   makeLink: function() {
     var view = CR.LinkView.create({url: this.get('url')});
     view.append();
   }
 }));
 
-CR.ImportView = Em.View.extend({
-  templateName: 'import',
-  nodetoolOutput: null,
-  tokens: Em.A(),
+CR.Modal = Em.View.extend({
   close: function() {
     this.remove();
   },
+  modalBackDrop: Em.View.extend({
+    classNames: ['modal-backdrop', 'fade', 'in'],
+    mouseDown: function() {
+      this.get('parentView').close();
+    }
+  })
+});
+
+CR.ImportView = CR.Modal.extend({
+  templateName: 'import',
+  nodetoolOutput: null,
+  tokens: Em.A(),
   import: function() {
     var tokens = this.get('tokens');
     CR.get('ringController').importRing(tokens);
-    this.remove();
+    this.close();
   },
   parseTokens: function() {
     var output = this.get('nodetoolOutput') ;
@@ -213,29 +226,21 @@ CR.ImportView = Em.View.extend({
       }
     });
     this.set('tokens', tokens);
-  }.observes('nodetoolOutput'),
-  modalBackDrop: Em.View.extend({
-    classNames: ['modal-backdrop', 'fade', 'in'],
-    mouseDown: function() {
-      this.get('parentView').close();
-    }
-  })
+  }.observes('nodetoolOutput')
 });
 
-CR.LinkView = Em.View.extend({
+CR.LinkView = CR.Modal.extend({
   templateName: 'link',
-  url: null,
-  close: function() {
-    this.remove();
-  },
-  modalBackDrop: Em.View.extend({
-    classNames: ['modal-backdrop', 'fade', 'in'],
-    mouseDown: function() {
-      this.get('parentView').close();
-    }
-  })
+  url: null
 });
 
+CR.NewRingView = CR.Modal.extend({
+  templateName: 'new-ring',
+  import: function() {
+    CR.ringController.newRing();
+    this.close();
+  }
+});
 
 CR.TokenInfoView = Em.View.extend({
   selectedNode: null,
