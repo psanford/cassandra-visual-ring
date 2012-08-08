@@ -148,7 +148,7 @@ CR.set('ringController', Em.ArrayProxy.create({
       token_sets.push('r' + i + '=' + tokens.join(','));
     });
     return base + '#' + token_sets.join('&');
-  }.property('@each').cacheable(),
+  },
   load: function() {
     var params = location.href;
     var rings = {};
@@ -189,7 +189,7 @@ CR.set('ringController', Em.ArrayProxy.create({
     view.append();
   },
   makeLink: function() {
-    var view = CR.LinkView.create({url: this.get('url')});
+    var view = CR.LinkView.create({url: this.url()});
     view.append();
   }
 }));

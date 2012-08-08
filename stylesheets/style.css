@@ -131,6 +131,7 @@ table {
   font-size: 28pt;
   font-style: italic;
   display: inline-block;
+  float: left;
 }
 
 .new-ring-title {
