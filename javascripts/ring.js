@@ -32,7 +32,7 @@ CR.Node = Em.Object.extend({
   token: null,
   color: 'blue',
   percentage: 0,
-  delete: function() {
+  'delete': function() {
     this.set('token', null);
     return false;
   },
@@ -210,7 +210,7 @@ CR.ImportView = CR.Modal.extend({
   templateName: 'import',
   nodetoolOutput: null,
   tokens: Em.A(),
-  import: function() {
+  'import': function() {
     var tokens = this.get('tokens');
     CR.get('ringController').importRing(tokens);
     this.close();
@@ -236,7 +236,7 @@ CR.LinkView = CR.Modal.extend({
 
 CR.NewRingView = CR.Modal.extend({
   templateName: 'new-ring',
-  import: function() {
+  'import': function() {
     CR.ringController.newRing();
     this.close();
   }
